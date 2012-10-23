@@ -7,6 +7,9 @@ class ShortenedUrl < ActiveRecord::Base
   BASE16 = "0123456789abcdef"
   BASE36 = "0123456789abcdefghijklmnopqrstuvwxyz"
 
+  # drop O as ambiguous with 0
+  BASE35 = "0123456789abcdefghijklmnpqrstuvwxyz"
+
   class << self
     # Shorten a long URI, lengthen a short URI
     def map(uri) short_uri?(uri) ? lengthen(uri) : shorten(uri) end
@@ -31,7 +34,7 @@ class ShortenedUrl < ActiveRecord::Base
       "http://va.ry/#{encode(surl.id)}"
     end
 
-    def encode n, base = BASE36
+    def encode n, base = BASE35
       s = ""
       div = 1; div *= base.length while div * base.length <= n
       s.concat base.slice(n/div)
@@ -43,9 +46,10 @@ class ShortenedUrl < ActiveRecord::Base
       s
     end
 
-    def decode s, base = BASE36
+    def decode s, base = BASE35
+      s.gsub!('O','0') if base == BASE35
       n = 0; div = 1
-      s.reverse!.each_char do |c|
+      s.downcase.reverse!.each_char do |c|
         n += base.index(c) * div
         div *= base.length
       end

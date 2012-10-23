@@ -64,8 +64,8 @@ describe ShortenedUrl do
   describe '#decode' do
     it "converts an encoded string into a number" do
       ShortenedUrl.decode('ff',ShortenedUrl::BASE16).should == 255
-      ShortenedUrl.decode("7cik3",ShortenedUrl::BASE36).should == 12341235
-      # ShortenedUrl.decode("0",ShortenedUrl::BASE35).should == 0
+      ShortenedUrl.decode("7CIK3",ShortenedUrl::BASE36).should == 12341235
+      ShortenedUrl.decode("O",ShortenedUrl::BASE35).should == 0
     end
   end
 end
