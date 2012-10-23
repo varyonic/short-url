@@ -1,0 +1,15 @@
+development:
+  adapter: postgresql
+  host: 127.0.0.1
+  port: 5432
+  database: short-url_development
+  username: postgres
+  password: Varyonic
+
+test:
+  adapter: postgresql
+  host: 127.0.0.1
+  port: 5432
+  database: short-url_test
+  username: postgres
+  password: Varyonic
