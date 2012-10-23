@@ -43,18 +43,30 @@ class ShortenedUrl < ActiveRecord::Base
         div /= base.length
         s.concat base.slice(n/div)
       end
-      s
+      s + checkdigit(s,base)
     end
 
     def decode s, base = BASE35
-      s.gsub!('O','0') if base == BASE35
+      s.downcase!
+      s.gsub!('o','0') if base == BASE35
+      check_digit = s.slice(-1)
+      s.chop!
+      raise NotFound, s if checkdigit(s,base) != check_digit
+
       n = 0; div = 1
-      s.downcase.reverse!.each_char do |c|
+      s.reverse.each_char do |c|
         n += base.index(c) * div
         div *= base.length
       end
       n
     end
+
+    # Adding a checkdigit ensures all URLs differ by at least two characters
+    def checkdigit s, base
+      d = s.chars.map { |c| base.index(c) }.reduce(:+) % base.length
+      base.slice -d
+    end
+
   end
 
   attr_accessible :full_url
